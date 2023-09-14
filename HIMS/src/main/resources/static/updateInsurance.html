@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>My Spring Boot Application</title>
+</head>
+
+<body>
+	<center>
+		<h1>Insurance</h1><br>
+		<label>id:</label><input type="text" id="no"><br>
+		<label>Sum ammount:</label><input type="text" id="dept"><br>
+		<label>Premium Amount:</label><input type="text" id="job"><br>
+		
+		<br>
+		<button onclick="getEmp()">GetAllEmployees</button>
+		<button onclick="createEmployee()">AddEmployee</button>
+			<button onclick="save()">Save</button>
+<br><br>
+		<table id="list" border="1px">
+			
+		</table>
+
+		<script>
+			
+			function getEmp() {
+				
+				var a = new XMLHttpRequest();
+				a.open("GET", "/insurances", true);
+				a.send();
+				a.onreadystatechange = function () {
+					if (a.readyState === 4) { // Check if the request is complete
+						if (a.status === 200) {
+							var data = JSON.parse(a.responseText);
+							console.log(data);
+						
+
+							// Clear the existing table body
+							 
+							var table= document.getElementById("list");
+							table.innerHTML=``;
+							var tablebody= document.createElement("tbody");
+							var tablehead= document.createElement("thead");
+							var headers= document.createElement("th");
+							var row= document.createElement("tr");
+							var body = document.createElement('tr');
+							var td1 = document.createElement('th');
+							var td2 = document.createElement('th');
+							
+							var td4 = document.createElement('th');
+							var td5 = document.createElement('th');
+							var td8 = document.createElement('th');
+							var td6 = document.createElement('th');
+							
+							td1.textContent="ID";
+							td2.textContent="Cust id";
+							
+							td4.textContent="Sum assured";
+							td5.textContent="insp_id";
+							td6.textContent="Premium ammount";
+							
+							td8.textContent="Update";
+							row.appendChild(td1);
+							row.appendChild(td2);
+						
+							row.appendChild(td4);
+							row.appendChild(td5);
+							row.appendChild(td6);
+						
+							row.appendChild(td8);
+							tablehead.appendChild(row);
+							table.append(tablehead);
+							
+						
+							
+				   
+
+							data.forEach(function (x) {
+								console.log(x);
+								var body = document.createElement('tr');
+								var td1 = document.createElement('td');
+								var td2 = document.createElement('td');
+								
+								var td4 = document.createElement('td');
+								var td5 = document.createElement('td');
+								var td6 = document.createElement('td');
+								
+								var td9= document.createElement('td');
+
+								var td8 = document.createElement('button')
+								td1.textContent = x.insr_id;
+								td2.textContent = x.insr_cust_id;
+								
+								td4.textContent = x.insr_sum_assured;
+								td5.textContent = x.insr_insp_id;
+								td6.textContent = x.insr_yrly_prem_amount;
+								
+								td8.textContent = "Update";
+								td8.onclick = function () {
+
+									updateEmp(x);
+								};
+
+								// Append the button to the table cell
+								
+								td9.appendChild(td8);
+								body.appendChild(td1);
+
+								body.appendChild(td2);
+								
+								body.appendChild(td4);
+								body.appendChild(td5);
+								body.appendChild(td6);
+								
+								body.appendChild(td9);
+								tablebody.appendChild(body);
+								
+							});
+							table.append(tablebody);
+						}
+					}
+				}
+			}
+		
+
+			function updateEmp(x) {
+
+				document.getElementById("no").value = x.insr_id;
+				document.getElementById("dept").value = x.insr_sum_assured;
+				document.getElementById("job").value = x.insr_yrly_prem_amount;
+				
+
+			}
+			
+			
+			
+			
+			
+			
+			
+			function save() {
+				
+				var empData = {
+					insr_id: document.getElementById("no").value,
+					insr_sum_assured: document.getElementById("dept").value,
+					insr_yrly_prem_amount: document.getElementById("job").value,
+					
+
+				};
+				
+				console.log(empData);
+
+				// Create an XMLHttpRequest object
+				var xhr = new XMLHttpRequest();
+
+				// Configure the request
+				xhr.open("PUT", "/save", true); // Replace with the actual URL
+
+				// Set the request header to specify JSON content
+				xhr.setRequestHeader("Content-Type", "application/json");
+
+				// Convert the JavaScript object to a JSON string
+				var jsonData = JSON.stringify(empData);
+				console.log(jsonData);
+
+				// Set up a callback function to handle the response
+				xhr.onreadystatechange = function () {
+					if (xhr.readyState === 4) { // Check if the request is complete
+						if (xhr.status === 200) { // Check if the response status is "Created"
+							alert("Employee is UPdated successfully");
+							// You can perform additional actions here if needed
+						} else {
+							alert("Failed to UPdate employee"); // Handle the error case
+						}
+					}
+				};
+
+				// Send the JSON data as the request body
+				xhr.send(jsonData);
+				getEmp();
+			}
+
+		</script>
+	</center>
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="ISO-8859-1">
+    <title>JSON to DataTable Example</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <!-- Include DataTables JavaScript -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+</head>
+
+<body>
+    <h1>Insurance</h1>
+    <div id="di">
+        <table id="tab" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>hosp_id</th>
+                    <th>hosp_pincode</th>
+                    <th>hosp_luuser</th>
+                    <th>hosp_title</th>
+                    <th>hosp_location</th>
+                    <th>hosp_address</th>
+                    <th>hosp_contactphone</th>
+                    <th>hosp_luudate</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <input type="button" value="GET HOSPITALS" id="getHospitalsButton">
+	<button><a href="users.html">Create User</a></button>
+	<button><a href="updateInsurance.html">Update Insurance</a></button>
+    <script>
+        $(document).ready(function () {
+            var table;
+
+            $("#getHospitalsButton").click(function () {
+                $.ajax({
+                    url: "/networkhospitals",
+                    method: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        if (table) {
+                            // If the table is already initialized, destroy it first
+                            table.destroy();
+                        }
+
+                        table = $('#tab').DataTable({
+                            data: data,
+                            columns: [
+                                { data: 'hosp_id' },
+                                { data: 'hosp_pincode' },
+                                { data: 'hosp_luuser' },
+                                { data: 'hosp_title' },
+                                { data: 'hosp_location' },
+                                { data: 'hosp_address' },
+                                { data: 'hosp_contactphone' },
+                                { data: 'hosp_luudate' }
+                            ],
+                            pageLength: 5
+                        });
+                    },
+                    error: function () {
+                        console.log("Error fetching data.");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
